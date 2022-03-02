@@ -5,6 +5,7 @@ class FeedForwardNeuralNetwork:
     def __init__(self):
         self.layers = []
         self.n_layers = 0
+        self.prediction = None
     
     def add_layer(self, n_neuron, activation_function='linear', weights=None, biases=None):
         self.layers.append(Layer(n_neuron=n_neuron, activation_function=activation_function))
@@ -22,6 +23,18 @@ class FeedForwardNeuralNetwork:
 
             layer.forward_pass(val)
 
+        prediction = self.layers[-1].activation_value
+        prediction = prediction.reshape(prediction.shape[0], 1)
+
+        for i in range(len(prediction)):
+            if(prediction[i] > 0.5):
+                prediction[i] = 1
+            else:
+                prediction[i] = 0
+
+        self.prediction = prediction
+        return self.prediction
+
     def info(self):
         print("Number of layers: {}".format(self.n_layers))
         for i in range(self.n_layers):
@@ -32,3 +45,5 @@ class FeedForwardNeuralNetwork:
             print("Biases: {}".format(self.layers[i].biases))
             print("Activation value: {}".format(self.layers[i].activation_value))
             print("="*20)
+
+        print("Prediction: {}".format(self.prediction))
