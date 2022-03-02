@@ -6,19 +6,13 @@ class FeedForwardNeuralNetwork:
         self.layers = []
         self.n_layers = 0
     
-    def add_layer(self, n_neuron, activation_function='linear'): 
+    def add_layer(self, n_neuron, activation_function='linear', weights=None, biases=None):
         self.layers.append(Layer(n_neuron=n_neuron, activation_function=activation_function))
+        self.layers[-1].weights = weights
+        self.layers[-1].biases = biases
         self.n_layers += 1
 
     def predict(self, X):
-        for i in range(self.n_layers):
-            if(i == 0):
-                self.layers[i].weights = np.random.randn(X.shape[1], self.layers[i].n_neuron)
-            else:
-                self.layers[i].weights = np.random.randn(self.layers[i-1].n_neuron, self.layers[i].n_neuron)
-            
-            self.layers[i].biases = np.zeros(self.layers[i].n_neuron)
-
         for i in range(self.n_layers):
             layer = self.layers[i]
             if(i==0):
