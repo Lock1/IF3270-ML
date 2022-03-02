@@ -23,22 +23,21 @@ class FeedForwardNeuralNetwork:
 
             layer.forward_pass(val)
 
-        prediction = self.layers[-1].activation_value
-        prediction = prediction.reshape(prediction.shape[0], 1)
+        self.prediction = np.copy(self.layers[-1].activation_value)
+        self.prediction = self.prediction.reshape(self.prediction.shape[0], 1)
 
-        for i in range(len(prediction)):
-            if(prediction[i] > 0.5):
-                prediction[i] = 1
+        for i in range(len(self.prediction)):
+            if(self.prediction[i] > 0.5):
+                self.prediction[i] = 1
             else:
-                prediction[i] = 0
+                self.prediction[i] = 0
 
-        self.prediction = prediction
         return self.prediction
 
     def info(self):
         print("Number of layers: {}".format(self.n_layers))
         for i in range(self.n_layers):
-            print("Layer {}".format(i))
+            print("Layer {}".format(i+1))
             print("Number of neurons: {}".format(self.layers[i].n_neuron))
             print("Activation function: {}".format(self.layers[i].activation_function))
             print("Weights: \n{}".format(self.layers[i].weights))
