@@ -41,9 +41,9 @@ class FeedForwardNeuralNetwork:
             print("Layer {}".format(i))
             print("Number of neurons: {}".format(self.layers[i].n_neuron))
             print("Activation function: {}".format(self.layers[i].activation_function))
-            print("Weights: {}".format(self.layers[i].weights))
-            print("Biases: {}".format(self.layers[i].biases))
-            print("Activation value: {}".format(self.layers[i].activation_value))
+            print("Weights: \n{}".format(self.layers[i].weights))
+            print("Biases: \n{}".format(self.layers[i].biases))
+            print("Activation value: \n{}".format(self.layers[i].activation_value))
             print("="*20)
 
         print("Prediction: {}".format(self.prediction))
