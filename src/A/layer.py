@@ -2,7 +2,7 @@ import numpy as np
 from activation_function import linear, sigmoid, ReLU, softmax
 
 class Layer:
-    def __init__(self, n_neuron, weights=None, activation_function='linear'):
+    def __init__(self, n_neuron, weights=None, biases=None, activation_function='linear'):
         activations = {
             'linear': linear,
             'sigmoid': sigmoid,
@@ -18,7 +18,7 @@ class Layer:
             self.n_neuron = n_neuron
             self.activation_function = activations[activation_function]
             self.weights = weights
-            self.biases = None
+            self.biases = biases
             self.activation_value = None
 
     def forward_pass(self, input):

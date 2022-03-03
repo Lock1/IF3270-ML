@@ -8,9 +8,7 @@ class FeedForwardNeuralNetwork:
         self.prediction = None
     
     def add_layer(self, n_neuron, activation_function='linear', weights=None, biases=None):
-        self.layers.append(Layer(n_neuron=n_neuron, activation_function=activation_function))
-        self.layers[-1].weights = weights
-        self.layers[-1].biases = biases
+        self.layers.append(Layer(n_neuron=n_neuron, weights=weights, biases=biases, activation_function=activation_function))
         self.n_layers += 1
 
     def predict(self, X):

@@ -1,22 +1,22 @@
 [
-        {
-            "n_neuron": "2",
-            "activation_function": "sigmoid",
-            "weights": [
-                [20, -20],
-                [20, -20]
-            ],
-            "biases": [-10, 30]
-        },
-        {
-            "n_neuron": "1",
-            "activation_function": "sigmoid",
-            "weights": [
-                [
-                    [20], 
-                    [20]
-                ]
-            ],
-            "biases": [-30]
-        }
-    ]
+    {
+        "n_neuron": "2",
+        "activation_function": "sigmoid",
+        "weights": [
+            [20, -20],
+            [20, -20]
+        ],
+        "biases": [-10, 30]
+    },
+    {
+        "n_neuron": "1",
+        "activation_function": "sigmoid",
+        "weights": [
+            [
+                [20], 
+                [20]
+            ]
+        ],
+        "biases": [-30]
+    }
+]
