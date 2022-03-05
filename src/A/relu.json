@@ -1,0 +1,20 @@
+[
+  {
+    "n_neuron": "2",
+    "activation_function": "ReLU",
+    "weights": [
+      [1, 1],
+      [1, 1]
+    ],
+    "biases": [0, -1]
+  },
+  {
+    "n_neuron": "2",
+    "activation_function": "ReLU",
+    "weights": [
+      [1], 
+      [-2]
+    ],
+    "biases": [0]
+  }
+]
