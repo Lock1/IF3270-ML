@@ -1,7 +1,7 @@
 [
   {
     "n_neuron": "2",
-    "activation_function": "ReLU",
+    "activation_function": "relu",
     "weights": [
       [1, 1],
       [1, 1]
@@ -10,7 +10,7 @@
   },
   {
     "n_neuron": "2",
-    "activation_function": "ReLU",
+    "activation_function": "relu",
     "weights": [
       [1], 
       [-2]
