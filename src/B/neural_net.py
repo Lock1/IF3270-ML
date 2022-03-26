@@ -3,14 +3,13 @@ from layer import Layer
 from loss_function import sse, cross_entropy
 
 class NeuralNetwork:
-    def __init__(self, max_iter : int, batch_size : int, epoch: int, error_threshold : float, learning_rate : float = 0.01, random_state=None):
+    def __init__(self, max_iter : int, batch_size : int, error_threshold : float, learning_rate : float = 0.01, random_state=None):
         self.layers          = []
         self.n_layers        = 0
         self.prediction      = None
         self.max_iter        = max_iter
         self.iteration       = None
         self.batch_size      = batch_size
-        self.epoch           = epoch
         self.error_threshold = error_threshold
         self.learning_rate   = learning_rate
         np.random.seed(random_state)
@@ -114,27 +113,26 @@ class NeuralNetwork:
                 X : input value
                 y : target value
         """
-        iteration = len(X)//self.batch_size
-        if(iteration > self.max_iter):
-            iteration = self.max_iter
+        epoch = len(X)//self.batch_size
 
-        self.iteration = iteration
-
-        for e in range(self.epoch):
+        self.iteration  = 0
+        error = 99
+        
+        while (error > self.error_threshold):
             total_error = 0
-
-            for i in range(iteration):
+            i = 0
+            while((self.iteration < self.max_iter) & (i<epoch) & (error > self.error_threshold)):
                 input = X[i*self.batch_size:(i+1)*self.batch_size]
                 target = np.array(y[i*self.batch_size:(i+1)*self.batch_size]).T
                 target = np.reshape(target, (target.shape[0], 1))
 
                 prediction = self.forward_pass(input)
                 self.back_propagation(prediction)
-                error = np.mean(sse(target, prediction)).mean()
-                total_error += error
-            
-            if(total_error <= self.error_threshold):
-                break
+                e = np.mean(sse(target, prediction)).mean()
+                total_error += e
+                i += 1
+                self.iteration += 1
+            error = total_error
         
     def predict(self, X):
         prediction = self.forward_pass(X).flatten()
