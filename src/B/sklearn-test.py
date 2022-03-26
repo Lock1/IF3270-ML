@@ -10,7 +10,7 @@ Y = dataset.target
 
 # documentation link: https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html
 clf = MLPClassifier(
-    hidden_layer_sizes=(5,2),
+    hidden_layer_sizes=(2,3),
     activation="relu", 
     solver="sgd", 
     batch_size=10, 
