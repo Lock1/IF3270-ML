@@ -9,6 +9,6 @@ def sse(y_true : float, y_pred : float, derivative=False) -> float:
 def cross_entropy(y_true : float, y_pred : float, derivative=False) -> float:
   """cross entropy"""
   if(derivative):
-    #  TODO
-    pass
+    return -(y_true / y_pred) + (1 - y_true) / (1 - y_pred)
+
   return -np.sum(y_true * np.log(y_pred))
