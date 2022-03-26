@@ -16,8 +16,8 @@ def ReLU(X : float, derivative : bool = False) -> float:
   """Fungsi aktivasi ReLU"""
   if derivative:
     value = X.copy()
-    value[value <= 0] = 0
-    value[value > 0] = 1
+    value[value < 0] = 0
+    value[value >= 0] = 1
     return value
   return np.maximum(0, X)
 

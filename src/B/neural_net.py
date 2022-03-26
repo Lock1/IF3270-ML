@@ -70,7 +70,6 @@ class NeuralNetwork:
         value = value * dOutput_dInput
 
         dInput_dWeights = self.layers[-2 - reversed_layer].output
-
         return np.dot(dInput_dWeights.T, value)
         
 
