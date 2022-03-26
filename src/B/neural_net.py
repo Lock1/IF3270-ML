@@ -3,15 +3,17 @@ from layer import Layer
 from loss_function import sse, cross_entropy
 
 class NeuralNetwork:
-    def __init__(self, max_iter : int, batch_size : int, epoch: int, error_threshold : float, learning_rate : float = 0.01):
+    def __init__(self, max_iter : int, batch_size : int, epoch: int, error_threshold : float, learning_rate : float = 0.01, random_state=None):
         self.layers          = []
         self.n_layers        = 0
         self.prediction      = None
         self.max_iter        = max_iter
+        self.iteration       = None
         self.batch_size      = batch_size
         self.epoch           = epoch
         self.error_threshold = error_threshold
         self.learning_rate   = learning_rate
+        np.random.seed(random_state)
     
     def add_layer(self, n_neuron : int, activation_function : str = 'linear'):
         """ 
@@ -87,8 +89,11 @@ class NeuralNetwork:
         for i in range(1, self.n_layers):
             self.layers[i].z = np.dot(self.layers[i-1].output, self.layers[i].weights) + self.layers[i].biases
             self.layers[i].forward_pass(self.layers[i].z)
-        
-        return self.layers[-1].output
+
+        prediction = self.layers[-1].output.copy()
+        prediction = np.argmax(prediction, axis=1)
+        prediction = np.reshape(prediction, (prediction.shape[0],1))
+        return prediction
 
     def back_propagation(self, expected_target):
         """
@@ -114,12 +119,15 @@ class NeuralNetwork:
         if(iteration > self.max_iter):
             iteration = self.max_iter
 
+        self.iteration = iteration
+
         for e in range(self.epoch):
             total_error = 0
 
             for i in range(iteration):
                 input = X[i*self.batch_size:(i+1)*self.batch_size]
                 target = np.array(y[i*self.batch_size:(i+1)*self.batch_size]).T
+                target = np.reshape(target, (target.shape[0], 1))
 
                 prediction = self.forward_pass(input)
                 self.back_propagation(prediction)
@@ -131,6 +139,20 @@ class NeuralNetwork:
         
     def predict(self, X):
         prediction = self.forward_pass(X).flatten()
-        # TODO
-
         return prediction
+
+    def info(self):
+        print("Jumlah layer: {}".format(self.n_layers))
+        print("Jumlah iterasi: {}".format(self.iteration))
+        print("Jumlah fitur: {}".format(self.layers[0].input.shape[1]))
+        print("Jumlah output: {}".format(self.layers[-1].output.shape[1]))
+
+        # Print array weight untuk setiap layer
+        for i in range(1, self.n_layers):
+            print("Layer {} weights".format(i))
+            print(self.layers[i].weights)
+            print("")
+            print("Layer {} biases".format(i))
+            print(self.layers[i].biases)
+            print("")
+            
