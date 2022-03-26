@@ -13,9 +13,9 @@ class NeuralNetwork:
         self.error_threshold = error_threshold
         self.learning_rate   = learning_rate
         np.random.seed(random_state)
-    
+
     def add_layer(self, n_neuron : int, activation_function : str = 'linear'):
-        """ 
+        """
             method to add a layer to nn
 
             parameters:
@@ -23,7 +23,7 @@ class NeuralNetwork:
                 activation_function : activation function of layer
         """
         self.layers.append(Layer(n_neuron=n_neuron, activation_function=activation_function))
-        
+
         # initialize weights and biases for hidden layer and output layer
         if(self.n_layers!=0):
             self.layers[-1].weights = np.random.randn(self.layers[-2].n_neuron, self.layers[-1].n_neuron) * 0.001
@@ -40,13 +40,13 @@ class NeuralNetwork:
                 derivative : if true, return derivative of loss function
         """
         if(activation_function_name == "softmax"):
-            return cross_entropy(output_prediction, derivative)
+            return cross_entropy(target, output_prediction, derivative)
         else:
             return sse(target, output_prediction, derivative)
 
     def chain_rule(self, expected_target, reversed_layer):
         """
-            chain rule for backpropagation 
+            chain rule for backpropagation
 
             parameters:
                 expected_target : expected target value
@@ -62,7 +62,7 @@ class NeuralNetwork:
 
             # dError/dOutput * dOutput/dInput = dError/dInput
             value = value * dOutput_dInput
-            
+
             value = np.dot(value, self.layers[-1-i].weights.T)
 
         dOutput_dInput = self.layers[-1 - reversed_layer].activation_function(self.layers[-1 - reversed_layer].input, derivative=True)
@@ -70,12 +70,12 @@ class NeuralNetwork:
 
         dInput_dWeights = self.layers[-2 - reversed_layer].output
         return np.dot(dInput_dWeights.T, value)
-        
+
 
     def forward_pass(self, input) -> float:
-        """ 
+        """
             forward pass
-            
+
             parameters:
                 input : input value
         """
@@ -101,7 +101,7 @@ class NeuralNetwork:
 
         """
         for i in range(1, self.n_layers):
-            grad = self.chain_rule(expected_target, self.n_layers-1-i)
+            grad = self.chain_rule(expected_target, self.n_layers - 1 - i)
             self.layers[i].weights = self.layers[i].weights - (self.learning_rate * grad)
             self.layers[i].biases  = self.layers[i].biases - (self.learning_rate * np.mean(grad))
 
@@ -117,11 +117,11 @@ class NeuralNetwork:
 
         self.iteration  = 0
         error = 99
-        
+
         while (error > self.error_threshold):
             total_error = 0
             i = 0
-            while((self.iteration < self.max_iter) & (i<epoch) & (error > self.error_threshold)):
+            while((self.iteration < self.max_iter) and (i<epoch) and (error > self.error_threshold)):
                 input = X[i*self.batch_size:(i+1)*self.batch_size]
                 target = np.array(y[i*self.batch_size:(i+1)*self.batch_size]).T
                 target = np.reshape(target, (target.shape[0], 1))
@@ -133,7 +133,7 @@ class NeuralNetwork:
                 i += 1
                 self.iteration += 1
             error = total_error
-        
+
     def predict(self, X):
         prediction = self.forward_pass(X).flatten()
         return prediction
@@ -152,4 +152,3 @@ class NeuralNetwork:
             print("Layer {} biases".format(i))
             print(self.layers[i].biases)
             print("")
-            
