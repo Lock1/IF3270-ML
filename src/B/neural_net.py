@@ -27,7 +27,7 @@ class NeuralNetwork:
         
         # initialize weights and biases for hidden layer and output layer
         if(self.n_layers!=0):
-            self.layers[-1].weights = np.random.randn(self.layers[-2].n_neuron, self.layers[-1].n_neuron)
+            self.layers[-1].weights = np.random.randn(self.layers[-2].n_neuron, self.layers[-1].n_neuron) * 0.001
 
         self.n_layers += 1
 
