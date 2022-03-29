@@ -2,8 +2,8 @@ from neural_net import NeuralNetwork
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
-from sklearn.metrics import accuracy_score, f1_score
-from metrics import confusion_matrix
+# from sklearn.metrics import accuracy_score, f1_score, recall_score
+from metrics import confusion_matrix, prediction_stats, accuracy, precision, recall, f1
 
 dataset = load_iris()
 
@@ -22,9 +22,11 @@ NN.fit(X, Y)
 y_pred = NN.predict(X)
 NN.info()
 
-accuracy = accuracy_score(Y, y_pred)
-f1 = f1_score(Y, y_pred, average='weighted')
+# accuracy = accuracy_score(Y, y_pred)
+# f1 = f1_score(Y, y_pred, average='weighted')
+conf_matrix = confusion_matrix(Y, y_pred)
 
-print(confusion_matrix(Y, y_pred))
-print(f'Accuracy score = {accuracy}')
-print(f'F1 Score = {f1}')
+print(conf_matrix)
+print(f'Accuracy score = {accuracy(Y, y_pred)}')
+print(f'F1 Score = {f1(Y,y_pred)}')
+print(f'Recall Score = {recall(Y, y_pred)}')
