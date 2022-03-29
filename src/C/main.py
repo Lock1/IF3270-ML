@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
 from sklearn.metrics import accuracy_score, f1_score
+from metrics import confusion_matrix
 
 dataset = load_iris()
 
@@ -24,5 +25,6 @@ NN.info()
 accuracy = accuracy_score(Y, y_pred)
 f1 = f1_score(Y, y_pred, average='weighted')
 
+print(confusion_matrix(Y, y_pred))
 print(f'Accuracy score = {accuracy}')
 print(f'F1 Score = {f1}')
