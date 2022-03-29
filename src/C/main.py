@@ -27,6 +27,7 @@ NN.info()
 conf_matrix = confusion_matrix(Y, y_pred)
 
 print(conf_matrix)
+print(f'Precision = {precision(Y, y_pred)}')
 print(f'Accuracy score = {accuracy(Y, y_pred)}')
 print(f'F1 Score = {f1(Y,y_pred)}')
 print(f'Recall Score = {recall(Y, y_pred)}')
