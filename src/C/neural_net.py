@@ -56,6 +56,8 @@ class NeuralNetwork:
         dError_dOutput = self.get_error(self.layers[-1].activation_function_name, expected_target, self.layers[-1].output, derivative=True)
         value = dError_dOutput
 
+        value *= dError_dOutput
+
         for i in range(reversed_layer):
             # derivasi nilai output terhadap nilai input pada hidden layer
             dOutput_dInput = self.layers[-1-i].activation_function(self.layers[-1-i].input, derivative=True)
@@ -65,11 +67,12 @@ class NeuralNetwork:
 
             value = np.dot(value, self.layers[-1-i].weights.T)
 
-        dOutput_dInput = self.layers[-1 - reversed_layer].activation_function(self.layers[-1 - reversed_layer].input, derivative=True)
-        value = value * dOutput_dInput
+        # dOutput_dInput = self.layers[-1 - reversed_layer].activation_function(self.layers[-1 - reversed_layer].input, derivative=True)
+        # value = value * dOutput_dInput
 
-        dInput_dWeights = self.layers[-2 - reversed_layer].output
-        return np.dot(dInput_dWeights.T, value)
+        # dInput_dWeights = self.layers[-2 - reversed_layer].output
+        # return np.dot(dInput_dWeights.T, value)
+        return value
 
 
     def forward_pass(self, input) -> float:
@@ -88,10 +91,7 @@ class NeuralNetwork:
             self.layers[i].z = np.dot(self.layers[i-1].output, self.layers[i].weights) + self.layers[i].biases
             self.layers[i].forward_pass(self.layers[i].z)
 
-        prediction = self.layers[-1].output.copy()
-        prediction = np.argmax(prediction, axis=1)
-        prediction = np.reshape(prediction, (prediction.shape[0],1))
-        return prediction
+        return self.layers[-1].output
 
     def back_propagation(self, expected_target):
         """
@@ -100,10 +100,11 @@ class NeuralNetwork:
             parameters:
 
         """
-        for i in range(1, self.n_layers):
-            grad = self.chain_rule(expected_target, self.n_layers - 1 - i)
-            self.layers[i].weights = self.layers[i].weights - (self.learning_rate * grad)
-            self.layers[i].biases  = self.layers[i].biases - (self.learning_rate * np.mean(grad))
+        for i in range(self.n_layers-1, 0, -1):
+            grad = self.chain_rule(expected_target, i)
+            for j in range(len(self.layers[i].weights)):
+                for k in range(len(self.layers[i].weights[j])):
+                    self.layers[i].weights[j][k] = self.layers[i].weights[j][k] - (self.learning_rate*grad[j][0])
 
     def fit(self, X, y):
         """
@@ -127,9 +128,11 @@ class NeuralNetwork:
                 target = np.reshape(target, (target.shape[0], 1))
 
                 prediction = self.forward_pass(input)
-                self.back_propagation(prediction)
-                e = np.mean(sse(target, prediction)).mean()
-                total_error += e
+                self.back_propagation(target)
+                for t, p in zip(target, prediction):
+                    self.back_propagation(t)
+                    e = sse(t[0], np.argmax(p))
+                    total_error += e
                 i += 1
                 self.iteration += 1
             error = total_error
