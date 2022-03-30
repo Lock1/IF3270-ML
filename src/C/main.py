@@ -10,7 +10,7 @@ dataset = load_iris()
 X = dataset.data
 Y = dataset.target
 
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1)
 
 NN = NeuralNetwork(max_iter=200, batch_size=10, error_threshold=0.1, learning_rate=0.1, random_state=42069)
 NN.add_layer(n_neuron=4)
@@ -18,14 +18,14 @@ NN.add_layer(n_neuron=4, activation_function='relu')
 NN.add_layer(n_neuron=4, activation_function='relu')
 NN.add_layer(n_neuron=3)
 
-NN.fit(X, Y)
-y_pred = NN.predict(X)
+NN.fit(X_train, Y_train)
+y_pred = NN.predict(X_test)
 NN.info()
 
-conf_matrix = confusion_matrix(Y, y_pred)
+conf_matrix = confusion_matrix(Y_test, y_pred)
 
 print(f'Confusion Matrix:\n {conf_matrix}')
-print(f'Precision = {precision(Y, y_pred)}')
-print(f'Accuracy score = {accuracy(Y, y_pred)}')
-print(f'Recall Score = {recall(Y, y_pred)}')
-print(f'F1 Score = {f1(Y,y_pred)}')
+print(f'Precision = {precision(Y_test, y_pred)}')
+print(f'Accuracy score = {accuracy(Y_test, y_pred)}')
+print(f'Recall Score = {recall(Y_test, y_pred)}')
+print(f'F1 Score = {f1(Y_test,y_pred)}')
