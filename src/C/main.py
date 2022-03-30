@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
 from metrics import confusion_matrix, prediction_stats, accuracy, precision, recall, f1
+from save_load import saveModel, loadModel
 
 dataset = load_iris()
 
@@ -17,13 +18,16 @@ NN.add_layer(n_neuron=4, activation_function='relu')
 NN.add_layer(n_neuron=4, activation_function='relu')
 NN.add_layer(n_neuron=3)
 
-NN.fit(X_train, Y_train)
-y_pred = NN.predict(X_test)
+saveModel(NN, "test")
+print(loadModel("test"))
 
-conf_matrix = confusion_matrix(Y_test, y_pred)
+# NN.fit(X_train, Y_train)
+# y_pred = NN.predict(X_test)
 
-print(f'Confusion Matrix:\n {conf_matrix}')
-print(f'Precision = {precision(Y_test, y_pred)}')
-print(f'Accuracy score = {accuracy(Y_test, y_pred)}')
-print(f'Recall Score = {recall(Y_test, y_pred)}')
-print(f'F1 Score = {f1(Y_test,y_pred)}')
+# conf_matrix = confusion_matrix(Y_test, y_pred)
+
+# print(f'Confusion Matrix:\n {conf_matrix}')
+# print(f'Precision = {precision(Y_test, y_pred)}')
+# print(f'Accuracy score = {accuracy(Y_test, y_pred)}')
+# print(f'Recall Score = {recall(Y_test, y_pred)}')
+# print(f'F1 Score = {f1(Y_test,y_pred)}')
