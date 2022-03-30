@@ -139,7 +139,7 @@ class NeuralNetwork:
 
     def predict(self, X):
         prediction = self.forward_pass(X).flatten()
-        return prediction.astype(int)
+        return np.int_(prediction)
 
     def info(self):
         print("Jumlah layer: {}".format(self.n_layers))

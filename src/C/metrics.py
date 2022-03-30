@@ -33,7 +33,7 @@ def confusion_matrix(y_actual, y_pred):
 
     # Generate confusion matrix
     for i in range (y_length):
-       result[y_actual[i]][y_pred[i]] += 1 
+        result[y_actual[i]][y_pred[i]] += 1 
 
     return np.int_(result)
 
