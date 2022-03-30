@@ -2,7 +2,6 @@ from neural_net import NeuralNetwork
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
-# from sklearn.metrics import accuracy_score, f1_score, recall_score
 from metrics import confusion_matrix, prediction_stats, accuracy, precision, recall, f1
 
 dataset = load_iris()
@@ -20,7 +19,6 @@ NN.add_layer(n_neuron=3)
 
 NN.fit(X_train, Y_train)
 y_pred = NN.predict(X_test)
-NN.info()
 
 conf_matrix = confusion_matrix(Y_test, y_pred)
 
