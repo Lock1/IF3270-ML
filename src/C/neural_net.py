@@ -7,8 +7,6 @@ class NeuralNetwork:
         self.layers          = []
         self.n_layers        = 0
         self.prediction      = None
-        self.max_iter        = max_iter
-        self.iteration       = None
         self.batch_size      = batch_size
         self.error_threshold = error_threshold
         self.learning_rate   = learning_rate
@@ -56,8 +54,6 @@ class NeuralNetwork:
         dError_dOutput = self.get_error(self.layers[-1].activation_function_name, expected_target, self.layers[-1].output, derivative=True)
         value = dError_dOutput
 
-        value *= dError_dOutput
-
         for i in range(reversed_layer):
             # derivasi nilai output terhadap nilai input pada hidden layer
             dOutput_dInput = self.layers[-1-i].activation_function(self.layers[-1-i].input, derivative=True)
@@ -67,12 +63,11 @@ class NeuralNetwork:
 
             value = np.dot(value, self.layers[-1-i].weights.T)
 
-        # dOutput_dInput = self.layers[-1 - reversed_layer].activation_function(self.layers[-1 - reversed_layer].input, derivative=True)
-        # value = value * dOutput_dInput
+        dOutput_dInput = self.layers[-1 - reversed_layer].activation_function(self.layers[-1 - reversed_layer].input, derivative=True)
+        value = value * dOutput_dInput
 
-        # dInput_dWeights = self.layers[-2 - reversed_layer].output
-        # return np.dot(dInput_dWeights.T, value)
-        return value
+        dInput_dWeights = self.layers[-1 - reversed_layer].output
+        return np.dot(dInput_dWeights.T, value)
 
 
     def forward_pass(self, input) -> float:
@@ -106,7 +101,7 @@ class NeuralNetwork:
                 for k in range(len(self.layers[i].weights[j])):
                     self.layers[i].weights[j][k] = self.layers[i].weights[j][k] - (self.learning_rate*grad[j][0])
 
-    def fit(self, X, y):
+    def fit(self, X, y, epoch = 300):
         """
             fit the model
 
@@ -114,32 +109,28 @@ class NeuralNetwork:
                 X : input value
                 y : target value
         """
-        epoch = len(X)//self.batch_size
 
-        self.iteration  = 0
-        error = 99
-
-        while (error > self.error_threshold):
-            total_error = 0
+        # print(y)
+        for _ in range(epoch):
+            error = 0
             i = 0
-            while((self.iteration < self.max_iter) and (i<epoch) and (error > self.error_threshold)):
-                input = X[i*self.batch_size:(i+1)*self.batch_size]
-                target = np.array(y[i*self.batch_size:(i+1)*self.batch_size]).T
-                target = np.reshape(target, (target.shape[0], 1))
+            while (i < X.shape[0]):
+                lastIdx = min(i + self.batch_size, X.shape[0])
+                X_batch = X[i:lastIdx]
+                y_batch = y[i:lastIdx].T
+                y_batch = np.reshape(y_batch, (y_batch.shape[0], 1))
 
-                prediction = self.forward_pass(input)
-                self.back_propagation(target)
-                for t, p in zip(target, prediction):
-                    self.back_propagation(t)
-                    e = sse(t[0], np.argmax(p))
-                    total_error += e
-                i += 1
-                self.iteration += 1
-            error = total_error
+                prediction = self.forward_pass(X_batch)
+                self.back_propagation(y_batch)
+                for t, p in zip(y_batch, prediction):
+                    error += sse(t[0], np.argmax(p))
+                i += self.batch_size
+            if (error < self.error_threshold):
+                break
 
     def predict(self, X):
-        prediction = self.forward_pass(X).flatten()
-        return np.int_(prediction)
+        prediction = self.forward_pass(X)
+        return np.argmax(prediction, axis=1)
 
     def info(self):
         print("Jumlah layer: {}".format(self.n_layers))
