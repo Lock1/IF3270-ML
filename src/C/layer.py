@@ -22,7 +22,8 @@ class Layer:
             self.biases              = np.zeros(self.n_neuron)
             self.input               = None
             self.output              = None
-            self.z                   = None
+            self.net                 = None
+            self.error_term          = None
 
     def forward_pass(self, input : float) -> float:
         self.input            = input

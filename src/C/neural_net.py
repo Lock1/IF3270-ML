@@ -42,34 +42,6 @@ class NeuralNetwork:
         else:
             return sse(target, output_prediction, derivative)
 
-    def chain_rule(self, expected_target, reversed_layer):
-        """
-            chain rule for backpropagation
-
-            parameters:
-                expected_target : expected target value
-                reversed_layer : layer index to start backpropagation
-        """
-        # derivasi nilai error terhadap nilai output
-        dError_dOutput = self.get_error(self.layers[-1].activation_function_name, expected_target, self.layers[-1].output, derivative=True)
-        value = dError_dOutput
-
-        for i in range(reversed_layer):
-            # derivasi nilai output terhadap nilai input pada hidden layer
-            dOutput_dInput = self.layers[-1-i].activation_function(self.layers[-1-i].input, derivative=True)
-
-            # dError/dOutput * dOutput/dInput = dError/dInput
-            value = value * dOutput_dInput
-
-            value = np.dot(value, self.layers[-1-i].weights.T)
-
-        dOutput_dInput = self.layers[-1 - reversed_layer].activation_function(self.layers[-1 - reversed_layer].input, derivative=True)
-        value = value * dOutput_dInput
-
-        dInput_dWeights = self.layers[-1 - reversed_layer].output
-        return np.dot(dInput_dWeights.T, value)
-
-
     def forward_pass(self, input) -> float:
         """
             forward pass
@@ -88,6 +60,44 @@ class NeuralNetwork:
 
         return self.layers[-1].output
 
+    def chain_rule(self, expected_target, reversed_layer):
+        """
+            chain rule for backpropagation
+
+            parameters:
+                expected_target : expected target value
+                reversed_layer : layer index to start backpropagation
+        """
+        # derivasi nilai error terhadap nilai output
+        
+        # value = dError_dOutput
+        # print(value.shape)
+
+        if (reversed_layer == len(self.layers)-1):
+            lastLayer = self.layers[reversed_layer]
+            dE_dO = self.get_error(lastLayer.activation_function_name, expected_target, lastLayer.output, derivative=True)
+            dO_dI = lastLayer.activation_function(lastLayer.input, derivative=True)
+            dE_dI = np.sum(dE_dO * dO_dI, axis=0)
+            dE_dW = np.sum(dE_dI * lastLayer.input, axis=0)
+
+            lastLayer.error_term = dE_dI
+            return dE_dW
+        else:
+            currLayer = self.layers[reversed_layer]
+            nextLayer = self.layers[reversed_layer + 1]
+            if (currLayer.activation_function_name != 'softmax'):
+                d_layer = currLayer.activation_function(currLayer.input, derivative=True)
+                wkh_dk = np.dot(nextLayer.error_term, nextLayer.weights.T)
+                currLayer.error_term = np.sum(d_layer * wkh_dk, axis=0)
+
+                return currLayer.error_term
+            else:
+                di_dnet = np.sum(currLayer.activation_function(layer.input, derivative=True),axis=0)
+                do_di = nextLayer.error_term.diagonal()
+                layer.error_term = di_dnet * do_di
+
+                return layer.error_term
+
     def back_propagation(self, expected_target):
         """
             back propagation
@@ -97,9 +107,7 @@ class NeuralNetwork:
         """
         for i in range(self.n_layers-1, 0, -1):
             grad = self.chain_rule(expected_target, i)
-            for j in range(len(self.layers[i].weights)):
-                for k in range(len(self.layers[i].weights[j])):
-                    self.layers[i].weights[j][k] = self.layers[i].weights[j][k] - (self.learning_rate*grad[j][0])
+            self.layers[i].weights = self.layers[i].weights - (self.learning_rate * grad)
 
     def fit(self, X, y, epoch = 300):
         """

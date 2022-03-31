@@ -12,18 +12,15 @@ Y = dataset.target
 
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1)
 
-NN = NeuralNetwork(max_iter=200, batch_size=10, error_threshold=0.1, learning_rate=0.1, random_state=42069)
-NN.add_layer(n_neuron=4, activation_function='relu')
-NN.add_layer(n_neuron=4, activation_function='relu')
-NN.add_layer(n_neuron=4, activation_function='relu')
+NN = NeuralNetwork(max_iter=500, batch_size=10, error_threshold=0.01, learning_rate=0.01, random_state=42069)
+NN.add_layer(n_neuron=4)
 NN.add_layer(n_neuron=3, activation_function='relu')
-
-# saveModel(NN, "test")
-# print(loadModel("test"))
+NN.add_layer(n_neuron=3, activation_function='relu')
+NN.add_layer(n_neuron=2, activation_function='sigmoid')
+NN.add_layer(n_neuron=3)
 
 NN.fit(X_train, Y_train)
 y_pred = NN.predict(X_train)
-print(y_pred)
 conf_matrix = confusion_matrix(Y_test, y_pred)
 
 print(f'Confusion Matrix:\n {conf_matrix}')
