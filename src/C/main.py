@@ -3,7 +3,6 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
 from metrics import confusion_matrix, prediction_stats, accuracy, precision, recall, f1
-# from save_load import saveModel, loadModel
 
 dataset = load_iris()
 
@@ -16,7 +15,7 @@ NN = NeuralNetwork(max_iter=500, batch_size=10, error_threshold=0.01, learning_r
 NN.add_layer(n_neuron=4)
 NN.add_layer(n_neuron=3, activation_function='relu')
 NN.add_layer(n_neuron=3, activation_function='relu')
-NN.add_layer(n_neuron=2, activation_function='sigmoid')
+NN.add_layer(n_neuron=3, activation_function='sigmoid')
 NN.add_layer(n_neuron=3)
 
 NN.fit(X_train, Y_train)

@@ -10,7 +10,6 @@ def saveModel(obj, filename):
 def loadModel(filename):
     with open(f'models/{filename}.json') as json_file:
         data = json.load(json_file)
-        print(data)
 
     python_class = jsonpickle.decode(data)
 

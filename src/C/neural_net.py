@@ -10,7 +10,7 @@ class NeuralNetwork:
         self.batch_size      = batch_size
         self.error_threshold = error_threshold
         self.learning_rate   = learning_rate
-        np.random.seed(random_state)
+        self.random_state = random_state
 
     def add_layer(self, n_neuron : int, activation_function : str = 'linear'):
         """
@@ -23,6 +23,7 @@ class NeuralNetwork:
         self.layers.append(Layer(n_neuron=n_neuron, activation_function=activation_function))
 
         # initialize weights and biases for hidden layer and output layer
+        np.random.seed(self.random_state)
         if(self.n_layers!=0):
             self.layers[-1].weights = np.random.randn(self.layers[-2].n_neuron, self.layers[-1].n_neuron) * 0.001
 
